@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: `${process.env.CLIENT_URL}`,
+    origin: "https://note-making-app-ml1x.onrender.com",
     credentials: true,
   }),
 );
