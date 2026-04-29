@@ -8,12 +8,15 @@ const NoteContextProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
 
   const BackendUrl = import.meta.env.VITE_BACKEND_URI;
-  axios.defaults.withCredentials = true;
+  const api = axios.create({
+    baseURL: BackendUrl,
+    withCredentials: true,
+  });
 
   // GET NOTES
   const getNotes = async () => {
     try {
-      const response = await axios.get(`${BackendUrl}/api/v1/notes/all`);
+      const response = await api.get("/api/v1/notes/all");
 
       setNotes(response.data.data);
       // console.log(response.data.data);
@@ -25,10 +28,7 @@ const NoteContextProvider = ({ children }) => {
   // CREATE NOTE
   const createNote = async (noteData) => {
     try {
-      const response = await axios.post(
-        `${BackendUrl}/api/v1/notes/create`,
-        noteData,
-      );
+      const response = await api.post("/api/v1/notes/create", noteData);
 
       setNotes((prev) => [response.data.data, ...prev]);
     } catch (error) {
@@ -39,10 +39,7 @@ const NoteContextProvider = ({ children }) => {
   // UPDATE NOTE
   const updateNote = async (id, updatedNote) => {
     try {
-      const response = await axios.put(
-        `${BackendUrl}/api/v1/notes/update/${id}`,
-        updatedNote,
-      );
+      const response = await api.put(`/api/v1/notes/update/${id}`, updatedNote);
 
       setNotes(
         notes.map((note) => (note._id === id ? response.data.data : note)),
@@ -55,7 +52,7 @@ const NoteContextProvider = ({ children }) => {
   // DELETE NOTE
   const deleteNote = async (id) => {
     try {
-      await axios.delete(`${BackendUrl}/api/v1/notes/delete/${id}`);
+      await api.delete(`/api/v1/notes/delete/${id}`);
 
       setNotes(notes.filter((note) => note._id !== id));
     } catch (error) {
