@@ -1,0 +1,82 @@
+import axios from "axios";
+import { useEffect, useState, createContext, useContext } from "react";
+import { AuthContext } from "./AuthContext";
+const NoteContext = createContext();
+
+const NoteContextProvider = ({ children }) => {
+  const [notes, setNotes] = useState([]);
+  const { user } = useContext(AuthContext);
+
+  const BackendUrl = import.meta.env.VITE_BACKEND_URI;
+  axios.defaults.withCredentials = true;
+
+  // GET NOTES
+  const getNotes = async () => {
+    try {
+      const response = await axios.get(`${BackendUrl}/api/v1/notes/all`);
+
+      setNotes(response.data.data);
+      // console.log(response.data.data);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  // CREATE NOTE
+  const createNote = async (noteData) => {
+    try {
+      const response = await axios.post(
+        `${BackendUrl}/api/v1/notes/create`,
+        noteData,
+      );
+
+      setNotes((prev) => [response.data.data, ...prev]);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  // UPDATE NOTE
+  const updateNote = async (id, updatedNote) => {
+    try {
+      const response = await axios.put(
+        `${BackendUrl}/api/v1/notes/update/${id}`,
+        updatedNote,
+      );
+
+      setNotes(
+        notes.map((note) => (note._id === id ? response.data.data : note)),
+      );
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  // DELETE NOTE
+  const deleteNote = async (id) => {
+    try {
+      await axios.delete(`${BackendUrl}/api/v1/notes/delete/${id}`);
+
+      setNotes(notes.filter((note) => note._id !== id));
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      getNotes();
+    }
+  }, [user]);
+
+  const value = {
+    notes,
+    createNote,
+    updateNote,
+    deleteNote,
+  };
+
+  return <NoteContext.Provider value={value}>{children}</NoteContext.Provider>;
+};
+
+export { NoteContext, NoteContextProvider };
