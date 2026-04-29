@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import Navbar from "../components/Navbar";
-import Notes from "../components/Notes";
-import AddNoteModal from "../components/AddNoteModal";
+import Navbar from "../Components/Navbar";
+import Notes from "../Components/Notes";
+import AddNoteModal from "../Components/AddNoteModal";
 
 function Home() {
   const [open, setOpen] = useState(false);
