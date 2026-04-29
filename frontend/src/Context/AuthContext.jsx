@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
   // logout
   const logout = async () => {
     try {
-      await api.post("/api/v1/user/logout");
+      await api.post("/api/v1/user/logout", {}, { withCredentials: true });
       setUser(null);
       toast.success("Logged out successfully");
     } catch (error) {
@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const response = await api.get("/api/v1/user/me");
+      const response = await api.get("/api/v1/user/me", {withCredentials: true});
 
       setUser(response.data.user);
     } catch (error) {

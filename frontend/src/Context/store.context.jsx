@@ -16,7 +16,7 @@ const NoteContextProvider = ({ children }) => {
   // GET NOTES
   const getNotes = async () => {
     try {
-      const response = await api.get("/api/v1/notes/all");
+      const response = await api.get("/api/v1/notes/all",{ } ,{ withCredentials: true });
 
       setNotes(response.data.data);
       // console.log(response.data.data);
@@ -28,7 +28,7 @@ const NoteContextProvider = ({ children }) => {
   // CREATE NOTE
   const createNote = async (noteData) => {
     try {
-      const response = await api.post("/api/v1/notes/create", noteData);
+      const response = await api.post("/api/v1/notes/create", noteData, { withCredentials: true });
 
       setNotes((prev) => [response.data.data, ...prev]);
     } catch (error) {
@@ -39,7 +39,7 @@ const NoteContextProvider = ({ children }) => {
   // UPDATE NOTE
   const updateNote = async (id, updatedNote) => {
     try {
-      const response = await api.put(`/api/v1/notes/update/${id}`, updatedNote);
+      const response = await api.put(`/api/v1/notes/update/${id}`, updatedNote, { withCredentials: true });
 
       setNotes(
         notes.map((note) => (note._id === id ? response.data.data : note)),
@@ -52,7 +52,7 @@ const NoteContextProvider = ({ children }) => {
   // DELETE NOTE
   const deleteNote = async (id) => {
     try {
-      await api.delete(`/api/v1/notes/delete/${id}`);
+      await api.delete(`/api/v1/notes/delete/${id}`, { withCredentials: true });
 
       setNotes(notes.filter((note) => note._id !== id));
     } catch (error) {
